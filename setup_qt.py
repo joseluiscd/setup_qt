@@ -25,6 +25,7 @@ class build_qt(setuptools.Command):
         ('filename-qrc=', None, 'name template for .py files compiled from .qrc files'),
         ('filename-ui=', None, 'name template for .py files compiled from .ui files'),
         ('filename-ts=', None, 'name template for newly created .ts files'),
+        ('relative-imports=', None, 'use relative imports for pyuic')
     ]
 
     def initialize_options(self):
@@ -37,9 +38,10 @@ class build_qt(setuptools.Command):
         self.pyuic = 'pyuic5'
         self.pylupdate = 'pylupdate5'
         self.lrelease = 'lrelease'
-        self.filename_qrc = 'qrc_{name}.py'
-        self.filename_ui = 'ui_{name}.py'
+        self.filename_qrc = '{name}_rc.py'
+        self.filename_ui = '{name}_ui.py'
         self.filename_ts = '{package}_{lang}.ts'
+        self.relative_imports = False
 
     def finalize_options(self):
         if isinstance(self.packages, str):
@@ -65,7 +67,12 @@ class build_qt(setuptools.Command):
                 log.info("compiling {} Qt UI files...".format(package))
                 for f in package_path.glob('**/*.ui'):
                     f_compiled = f.with_name(self.filename_ui.format(name=f.stem))
-                    ret = subprocess.call([self.pyuic, '-o', f_compiled, f])
+
+                    command = [self.pyuic, '-o', f_compiled, f]
+                    if self.relative_imports:
+                        command.append("--from-imports")
+
+                    ret = subprocess.call(command)
                     if ret != 0:
                         log.error('error compiling .ui file: {}'.format(f))
 
