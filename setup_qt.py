@@ -25,7 +25,7 @@ class build_qt(setuptools.Command):
         ('filename-qrc=', None, 'name template for .py files compiled from .qrc files'),
         ('filename-ui=', None, 'name template for .py files compiled from .ui files'),
         ('filename-ts=', None, 'name template for newly created .ts files'),
-        ('relative-imports=', None, 'use relative imports for pyuic')
+        ('relative-imports', None, 'use relative imports for pyuic')
     ]
 
     def initialize_options(self):
