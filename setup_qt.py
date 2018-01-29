@@ -59,7 +59,7 @@ class build_qt(setuptools.Command):
                 log.info("compiling {} Qt resource files...".format(package))
                 for f in package_path.glob('**/*.qrc'):
                     f_compiled = f.with_name(self.filename_qrc.format(name=f.stem))
-                    ret = subprocess.call([self.pyrcc, '-o', f_compiled, f])
+                    ret = subprocess.call([self.pyrcc, '-o', str(f_compiled), str(f)])
                     if ret != 0:
                         log.error('error compiling .qrc file: {}'.format(f))
 
@@ -68,7 +68,7 @@ class build_qt(setuptools.Command):
                 for f in package_path.glob('**/*.ui'):
                     f_compiled = f.with_name(self.filename_ui.format(name=f.stem))
 
-                    command = [self.pyuic, '-o', f_compiled, f]
+                    command = [self.pyuic, '-o', str(f_compiled), str(f)]
                     if self.relative_imports:
                         command.append("--from-imports")
 
